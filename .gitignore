@@ -1,0 +1,4 @@
+.env
+data/database.json
+transcripts/
+node_modules/
