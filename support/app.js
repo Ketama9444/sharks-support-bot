@@ -963,4 +963,77 @@ if (!env.token || !env.guildId) {
   console.error('❌ Configure DISCORD_TOKEN et GUILD_ID dans .env');
   process.exit(1);
 }
+
+client.on('channelDelete', async (channel) => {
+  try {
+    // Charger la base actuelle
+    const db = storage.load();
+
+    // Chercher un ticket OUVERT correspondant au salon supprimé
+    const ticket = Object.values(db.tickets || {}).find(
+      t => t.channelId === channel.id && t.status === 'open'
+    );
+
+    // Ce salon n'était pas un ticket ouvert
+    if (!ticket) return;
+
+    console.log(
+      `🗑️ Salon supprimé → fermeture automatique du ticket #${ticket.id}`
+    );
+
+    // Fermer réellement le ticket dans la base
+    db.tickets[ticket.id].status = 'closed';
+    db.tickets[ticket.id].closedAt = Date.now();
+    db.tickets[ticket.id].closedReason = 'channel_deleted';
+
+    // Le salon n'existe plus
+    db.tickets[ticket.id].channelId = null;
+
+    // Le webhook du salon n'est plus utilisable
+    db.tickets[ticket.id].webhookId = null;
+    db.tickets[ticket.id].webhookToken = null;
+
+    // Sauvegarder dans le JSON
+    storage.save(db);
+
+    console.log(
+      `✅ Ticket #${ticket.id} marqué comme fermé dans la base.`
+    );
+
+    // Prévenir le joueur en MP
+    try {
+      const user = await client.users.fetch(ticket.userId);
+
+      await user.send({
+        content:
+          `🔒 **Ton ticket #${ticket.id} a été fermé.**\n\n` +
+          `Le salon de ton ticket a été supprimé par le staff.\n\n` +
+          `✅ Tu peux maintenant ouvrir un nouveau ticket en m'envoyant un nouveau message.`
+      });
+
+    } catch (dmError) {
+      console.error(
+        `⚠️ Impossible de prévenir le joueur du ticket #${ticket.id}:`,
+        dmError.message
+      );
+    }
+
+    // Log Discord
+    await log(
+      brandEmbed(
+        '🗑️ Ticket fermé automatiquement',
+        `Le salon du ticket **#${ticket.id}** a été supprimé.\n\n` +
+        `Le ticket a donc été automatiquement marqué comme **fermé**.\n` +
+        `Utilisateur : <@${ticket.userId}>`
+      )
+    ).catch(() => {});
+
+  } catch (error) {
+    console.error(
+      '❌ Erreur lors de la fermeture automatique après suppression du salon :',
+      error
+    );
+  }
+});
+
 client.login(env.token);
