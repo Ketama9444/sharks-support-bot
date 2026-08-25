@@ -261,11 +261,10 @@ async function ensureTicketWebhook(channel, ticketId) {
     return new WebhookClient({ id: ticket.webhookId, token: ticket.webhookToken });
   }
 
-  const webhook = await channel.createWebhook({
-    name: `Sharks FA • Ticket #${ticket.id}`,
-    avatar: logo,
-    reason: `Relais MP temporaire du ticket #${ticket.id}`
-  });
+const webhook = await channel.createWebhook({
+  name: `Sharks FA • Ticket #${ticket.id}`,
+  reason: `Relais MP temporaire du ticket #${ticket.id}`
+});
 
   db = storage.load();
   if (!db.tickets[ticketId]) {
