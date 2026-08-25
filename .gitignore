@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+/data/**
+!/data/support/
+!/data/support/.gitkeep
+!/data/spy6/
+!/data/spy6/.gitkeep
+support/data/
+support/transcripts/
+spy6/data/

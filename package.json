@@ -1,0 +1,20 @@
+{
+  "name": "sharks-support-spy6-combined",
+  "version": "1.0.0",
+  "description": "Sharks FA Support + SPY6 dans un seul service Northflank",
+  "main": "launcher.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node launcher.js",
+    "support": "node support/app.js",
+    "spy6": "node spy6/index.js",
+    "check": "node --check launcher.js && node --check support/app.js && node --check support/storage.js && node --check spy6/index.js && node --check spy6/src/state.js && node --check spy6/src/theme.js && node --check spy6/src/spyManager.js && node --check spy6/src/commands.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "discord.js": "14.27.0",
+    "dotenv": "16.4.7"
+  }
+}
