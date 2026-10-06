@@ -526,7 +526,7 @@ async function runSetup(guild) {
 
 client.once('ready', async () => {
   console.log(`✅ ${client.user.tag} connecté — Sharks FA Support`);
-  client.user.setActivity('Écris moi pour de l'aide !');
+  client.user.setActivity('Écris moi pour de laide !');
 
   try {
     const guild = await client.guilds.fetch(env.guildId);
