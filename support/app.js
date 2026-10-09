@@ -53,8 +53,7 @@ function supportMenu(customId = 'dm_category') {
       .addOptions(config.ticketCategories.map(c => ({
         label: c.label,
         description: c.description.slice(0, 100),
-        value: c.id,
-        emoji: c.emoji
+        value: c.id
       })))
   );
 }
