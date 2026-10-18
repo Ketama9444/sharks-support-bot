@@ -261,7 +261,7 @@ async function ensureTicketWebhook(channel, ticketId) {
   }
 
 const webhook = await channel.createWebhook({
-  name: `Sharks FA • Ticket #${ticket.id}`,
+  name: `Wave FA • Ticket #${ticket.id}`,
   reason: `Relais MP temporaire du ticket #${ticket.id}`
 });
 
@@ -358,7 +358,7 @@ async function createTranscript(channel, ticket) {
     const attachments = [...m.attachments.values()].map(a => `<div><a href="${esc(a.url)}">📎 ${esc(a.name || a.url)}</a></div>`).join('');
     return `<div class="msg"><div class="meta"><b>${esc(m.author?.tag || 'Inconnu')}</b> <span>${new Date(m.createdTimestamp).toLocaleString('fr-FR')}</span></div><div class="content">${esc(m.content).replace(/\n/g,'<br>')}${attachments}</div></div>`;
   }).join('\n');
-  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Sharks FA Ticket #${ticket.id}</title><style>body{font-family:Arial;background:#07101e;color:#eef4ff;padding:30px;max-width:1000px;margin:auto}.head{background:#0b1e38;padding:22px;border-radius:14px}.msg{padding:14px 0;border-bottom:1px solid #1c2f48}.meta span{color:#8ba1bd;font-size:12px}.content{margin-top:6px;white-space:normal}a{color:#63a7ff}</style></head><body><div class="head"><h1>🦈 Sharks FA — Ticket #${ticket.id}</h1><p>Utilisateur: ${esc(ticket.userTag)} (${ticket.userId})<br>Catégorie: ${esc(ticket.categoryLabel)}<br>Sujet: ${esc(ticket.subject)}<br>Statut: ${esc(ticket.status)}</p></div>${rows}</body></html>`;
+  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Wave FA Ticket #${ticket.id}</title><style>body{font-family:Arial;background:#07101e;color:#eef4ff;padding:30px;max-width:1000px;margin:auto}.head{background:#0b1e38;padding:22px;border-radius:14px}.msg{padding:14px 0;border-bottom:1px solid #1c2f48}.meta span{color:#8ba1bd;font-size:12px}.content{margin-top:6px;white-space:normal}a{color:#63a7ff}</style></head><body><div class="head"><h1>🌊 Wave FA — Ticket #${ticket.id}</h1><p>Utilisateur: ${esc(ticket.userTag)} (${ticket.userId})<br>Catégorie: ${esc(ticket.categoryLabel)}<br>Sujet: ${esc(ticket.subject)}<br>Statut: ${esc(ticket.status)}</p></div>${rows}</body></html>`;
   const outDir = process.env.SUPPORT_TRANSCRIPTS_DIR ? path.resolve(process.env.SUPPORT_TRANSCRIPTS_DIR) : path.join(__dirname, 'transcripts');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
   const out = path.join(outDir, `ticket-${ticket.id}.html`);
@@ -377,7 +377,7 @@ async function postTranscriptArchive(channel, ticket, reason = 'Archive de ferme
 
 async function createTicket(user, categoryId, subject, details) {
   if (isBlacklisted(user.id)) {
-    await user.send({ embeds: [brandEmbed('Accès au support refusé', 'Tu ne peux actuellement pas ouvrir de ticket auprès du support Sharks FA.')] }).catch(() => {});
+    await user.send({ embeds: [brandEmbed('Accès au support refusé', 'Tu ne peux actuellement pas ouvrir de ticket auprès du support Wave FA.')] }).catch(() => {});
     return null;
   }
 
@@ -401,7 +401,7 @@ async function createTicket(user, categoryId, subject, details) {
     name,
     type: ChannelType.GuildText,
     parent: config.channels.ticketCategoryIds?.[cat.id] || null,
-    topic: `Sharks FA Support • Ticket #${id} • User ${user.id} • ${cat.label}`,
+    topic: `Wave FA Support • Ticket #${id} • User ${user.id} • ${cat.label}`,
     permissionOverwrites
   });
 
@@ -430,7 +430,7 @@ async function createTicket(user, categoryId, subject, details) {
   storage.save(db2);
   await user.send({
     content: `<@${user.id}>`,
-    embeds: [brandEmbed('✅ Ticket créé', `Ton ticket **#${id}** a été créé dans la catégorie **${cat.label}**.\n\nTu peux maintenant **m’écrire directement ici** : chaque message sera envoyé au staff Sharks FA.\n\n🔒 **Pour fermer ton ticket, merci de faire \`!close\` dans cette conversation.**`)],
+    embeds: [brandEmbed('✅ Ticket créé', `Ton ticket **#${id}** a été créé dans la catégorie **${cat.label}**.\n\nTu peux maintenant **m’écrire directement ici** : chaque message sera envoyé au staff Wave FA.\n\n🔒 **Pour fermer ton ticket, merci de faire \`!close\` dans cette conversation.**`)],
     allowedMentions: { users: [user.id] }
   }).catch(() => {});
   await log(brandEmbed('🎫 Nouveau ticket', `Ticket **#${id}** créé par **${user.tag}** (${user.id})\nCatégorie : **${cat.label}**\nSalon : <#${channel.id}>`));
@@ -475,7 +475,7 @@ async function ensureSupportStructure(guild) {
       discordCategory = await guild.channels.create({
         name: categoryName,
         type: ChannelType.GuildCategory,
-        reason: `Sharks FA Support • catégorie ${cat.label}`
+        reason: `Wave FA Support • catégorie ${cat.label}`
       });
       console.log(`📁 Catégorie créée : ${categoryName}`);
     }
@@ -491,7 +491,7 @@ async function ensureSupportStructure(guild) {
     transcripts = await guild.channels.create({
       name: 'transcripts',
       type: ChannelType.GuildText,
-      reason: 'Sharks FA Support • transcripts uniques'
+      reason: 'Wave FA Support • transcripts uniques'
     });
     console.log('📄 Salon créé : transcripts');
   } else if (transcripts.parentId) {
@@ -504,7 +504,7 @@ async function ensureSupportStructure(guild) {
     logs = await guild.channels.create({
       name: 'support-logs',
       type: ChannelType.GuildText,
-      reason: 'Sharks FA Support • logs'
+      reason: 'Wave FA Support • logs'
     });
   } else if (logs.parentId) {
     await logs.setParent(null, { lockPermissions: false }).catch(() => {});
@@ -524,7 +524,7 @@ async function runSetup(guild) {
 }
 
 client.once('ready', async () => {
-  console.log(`✅ ${client.user.tag} connecté — Sharks FA Support`);
+  console.log(`✅ ${client.user.tag} connecté — Wave FA Support`);
   client.user.setActivity('Écris moi pour de laide !');
 
   try {
@@ -551,7 +551,7 @@ client.on('messageCreate', async message => {
         return message.reply({ embeds: [brandEmbed('Support indisponible', 'Tu ne peux actuellement pas ouvrir de ticket.')] }).catch(() => {});
       }
       return message.reply({
-        embeds: [brandEmbed('🦈 Support Sharks FA', 'Bienvenue sur le support officiel de **Sharks FA**.\n\nSélectionne la catégorie correspondant à ta demande. Un formulaire te permettra ensuite d’expliquer ton problème.')],
+        embeds: [brandEmbed('🦈 Support Wave FA', 'Bienvenue sur le support officiel de **Wave FA**.\n\nSélectionne la catégorie correspondant à ta demande. Un formulaire te permettra ensuite d’expliquer ton problème.')],
         components: [supportMenu()]
       }).catch(() => {});
     }
@@ -614,9 +614,9 @@ Une fois confirmé, la conversation sera **archivée automatiquement en transcri
   const user = await client.users.fetch(ticket.userId).catch(() => null);
   if (!user) return;
 
-  // Réponse staff -> joueur : DM normal, mais clairement identifié comme support Sharks RP.
+  // Réponse staff -> joueur : DM normal, mais clairement identifié comme support Wave RP.
   const dmPayload = { allowedMentions: { parse: [] } };
-  const supportHeader = '__**Support de Sharks RP :**__';
+  const supportHeader = '__**Support de Wave RP :**__';
   dmPayload.content = message.content ? `${supportHeader}\n${message.content}` : supportHeader;
   const files = attachmentPayloads(message);
   if (files.length) dmPayload.files = files;
@@ -759,7 +759,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu() && interaction.customId === 'dm_category') {
       const categoryId = interaction.values[0];
       const cat = getCategory(categoryId);
-      const modal = new ModalBuilder().setCustomId(`dm_modal:${categoryId}`).setTitle(`Sharks FA • ${cat.label}`);
+      const modal = new ModalBuilder().setCustomId(`dm_modal:${categoryId}`).setTitle(`Wave FA • ${cat.label}`);
       const subject = new TextInputBuilder().setCustomId('subject').setLabel('Sujet de ta demande').setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(100).setPlaceholder('Ex: Problème de whitelist');
       const details = new TextInputBuilder().setCustomId('details').setLabel('Explique ta demande').setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(1500).setPlaceholder('Donne un maximum de détails...');
       modal.addComponents(new ActionRowBuilder().addComponents(subject), new ActionRowBuilder().addComponents(details));
@@ -865,7 +865,7 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.commandName === 'support-panel') {
       const button = new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Ouvrir le support en MP').setStyle(ButtonStyle.Link).setURL(`https://discord.com/users/${client.user.id}`).setEmoji('🦈'));
-      await interaction.channel.send({ embeds: [brandEmbed('Centre de support Sharks FA', 'Besoin d’aide ? Clique sur le bouton ci-dessous puis envoie un **message privé au bot**.\n\nTu pourras choisir une catégorie et remplir un formulaire détaillé.')], components: [button] });
+      await interaction.channel.send({ embeds: [brandEmbed('Centre de support Wave FA', 'Besoin d’aide ? Clique sur le bouton ci-dessous puis envoie un **message privé au bot**.\n\nTu pourras choisir une catégorie et remplir un formulaire détaillé.')], components: [button] });
       return interaction.reply({ content: '✅ Panel envoyé.', ephemeral: true });
     }
 
